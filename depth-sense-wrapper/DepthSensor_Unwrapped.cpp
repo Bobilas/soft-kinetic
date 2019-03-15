@@ -40,7 +40,8 @@ namespace DepthSenseWrapper
 
 			vector<Node> nodes = devices[0].getNodes();
 
-			for (int i = 0; i < nodes.size(); i++)
+			int count = nodes.size();
+			for (int i = 0; i < count; i++)
 			{
 				ConfigureNode(nodes[i]);
 			}
@@ -54,7 +55,7 @@ namespace DepthSenseWrapper
 		if (_colorNode.isSet()) _context.unregisterNode(_colorNode);
 		if (_audioNode.isSet()) _context.unregisterNode(_audioNode);
 	}
-
+	
 	void DepthSensor_Unwrapped::Run()
 	{
 		if (_deviceFound)
@@ -65,6 +66,7 @@ namespace DepthSenseWrapper
 				_stop = false;
 				_isRunning = true;
 			}
+
 			_context.startNodes();
 			_context.run();
 		}
@@ -177,7 +179,7 @@ namespace DepthSenseWrapper
 			_context.requestControl(_depthNode, 0);
 			_depthNode.setConfiguration(config);
 		}
-		catch (DepthSense::Exception ex) {}
+		catch (DepthSense::Exception ex) {}	
 	}
 	void DepthSensor_Unwrapped::ConfigureColorNode()
 	{

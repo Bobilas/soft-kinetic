@@ -10,6 +10,7 @@ namespace DepthSenseWrapper
 	void DepthSensor::Run()
 	{
 		_instance->Run();
+		_instance->Stop();
 	}
 
 	int16Matrix^ DepthSensor::GetDepthMap()
