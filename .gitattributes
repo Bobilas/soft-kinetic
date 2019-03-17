@@ -1,3 +1,4 @@
-*.h linguist-language=c++
-*.cpp linguist-language=c++
+*.h linguist-language=C++
+*.hxx linguist-language=C++
+*.cpp linguist-language=C++
 smart-instructor/Properties linguist-detectable=false
