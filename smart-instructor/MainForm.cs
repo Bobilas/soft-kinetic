@@ -134,7 +134,7 @@ namespace SmartInstructor
 
         private bool _guiFlag = false;
         private ThreadService _guiUpdater = new ThreadService("gui updater");
-        private ThreadService _garbageCollector = new ThreadService("garbage collector");
+        private ThreadService _garbageCollector = new ThreadService("garbage-collector");
         private ThreadService _fpsUpdater = new ThreadService("fps updater");
         private VideoCapture _capture = new VideoCapture(0)
         {
