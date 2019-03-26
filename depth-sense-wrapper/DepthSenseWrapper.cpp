@@ -20,7 +20,7 @@ namespace DepthSenseWrapper
 		int height = _instance->Height;
 		auto start = high_resolution_clock::now();
 		auto end = high_resolution_clock::now();
-		while (duration_cast<milliseconds>(end - start).count() < 500)
+		while (duration_cast<milliseconds>(end - start).count() < 200)
 		{
 			if (_instance->CheckDepthMap())
 			{
@@ -35,6 +35,7 @@ namespace DepthSenseWrapper
 				return result;
 			}
 			end = high_resolution_clock::now();
+			_sleep(1);
 		}
 
 		return gcnew int16Matrix(0, 0);

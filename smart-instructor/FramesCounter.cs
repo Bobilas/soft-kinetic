@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SmartInstructor
 {
@@ -40,7 +38,7 @@ namespace SmartInstructor
                 _watch.Restart();
             }
             _frames.Add(_watch.ElapsedMilliseconds);
-            _frames = _frames.Where(e => _watch.ElapsedMilliseconds - e < 1000).ToList();
+            RemoveOldFrames();
 
             Unlock();
         }
@@ -48,19 +46,21 @@ namespace SmartInstructor
         {
             if (!TryLock())
             {
-                return -1;
+                return 0;
             }
 
-            _frames = _frames.Where(e => _watch.ElapsedMilliseconds - e < 1000).ToList();
-            int fps = _frames.Count * 1000 / (int)Math.Min(_watch.ElapsedMilliseconds, 1000);
+            RemoveOldFrames();
+            int fps = _frames.Count * 1000 / (int)Math.Min(_watch.ElapsedMilliseconds + 1, 1000);
             Unlock();
 
-            return fps > 0 ? fps : -1;
+            return fps;
         }
         public void Reset()
         {
             _frames = new List<long>();
             _watch.Restart();
         }
+
+        private void RemoveOldFrames() => _frames.RemoveAll(e => _watch.ElapsedMilliseconds - e >= 1000);
     }
 }
