@@ -5,44 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Configurator"
         mc:Ignorable="d"
-        Name="Window_Main"
+        x:Name="Window_Main"
         Title="MainWindow" Height="520" 
         Width="800" ResizeMode="CanMinimize">
-    
-    <Grid Name="Grid_Main" Background="#FF979797">
+    <Window.Resources>
+        <local:ContainerToBoolConverter x:Key="ContainerToBoolConverter"/>
+        <local:IndexToBoolConverter x:Key="IndexToBoolConverter"/>
+        <local:PointToThicknessConverter x:Key="PointToThicknessConverter"/>
+    </Window.Resources>
+    <Grid x:Name="Grid_Main" Background="#FF979797">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="645"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Padding="5, 5">
-            <Image Name="Image_Camera" Width="640" Height="480"
-               MouseDown="Image_Camera_MouseDown" MouseMove="Image_Camera_MouseMove"/>
+            <Image 
+                x:Name="Image_Camera" Width="640" Height="480"
+                MouseDown="Image_Camera_MouseDown" 
+                MouseMove="Image_Camera_MouseMove"
+                MouseUp="Image_Camera_MouseUp"
+                Source="{Binding Path=Image, UpdateSourceTrigger=PropertyChanged}"/>
         </Border>
-        <Border Name="Border_Rectangle" Grid.Column="0" Padding="5, 5">
-            <Rectangle Name="Rectangle_Selection" Width="100" Stroke="#FF2EFF00" 
-                       StrokeThickness="2" Margin="267,191,0,0" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top"/>
+        <Border x:Name="Border_Rectangle" Grid.Column="0" Padding="5, 5">
+            <Rectangle 
+                x:Name="Rectangle_Selection"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Stroke="#FF2EFF00" StrokeThickness="2"
+                MouseDown="Image_Camera_MouseDown" 
+                MouseMove="Image_Camera_MouseMove"
+                MouseUp="Image_Camera_MouseUp"
+                Margin="{Binding Converter={StaticResource PointToThicknessConverter}, Path=Position}"
+                Width="{Binding Width}"
+                Height="{Binding Height}"/>
         </Border>
         <Border Grid.Column="1" Padding="5, 5">
             <StackPanel VerticalAlignment="Center">
-                <ComboBox Name="ComboBox_Containers" VerticalAlignment="Top" Margin="0, 0, 0, 2" 
-                          ItemsSource="{Binding Path=Containers}"
-                          DisplayMemberPath="Name"
-                          SelectedValuePath="Name"
-                          SelectedValue="{Binding Path=SelectedContainer}"/>
-                <Button Name="Button_Remove" Content="Remove" VerticalAlignment="Top" Click="Button_Remove_Click"/>
+                <ComboBox 
+                    x:Name="ComboBox_Containers" 
+                    VerticalAlignment="Top"
+                    Margin="0, 0, 0, 2" 
+                    ItemsSource="{Binding Path=Items}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Name"
+                    SelectedIndex="{Binding Path=SelectedContainer}"/>
+                <Button x:Name="Button_Remove"
+                    Content="Remove" 
+                    VerticalAlignment="Top" 
+                    Command="{Binding RemoveCommand}"
+                    IsEnabled="{Binding Converter={StaticResource IndexToBoolConverter}, Path=SelectedContainer}"/>
                 <GroupBox Header="Add new container" Margin="0, 0, 0, 2">
                     <Border Padding="2, 2">
                         <StackPanel>
-                            <TextBox Name="TextBox_Container" 
-                                     Height="23" 
-                                     Padding="2, 2"/>
-                            <Button Name="Button_Add" Content="Add" VerticalAlignment="Top" Click="Button_Add_Click"
-                                    IsEnabled="{Binding ElementName=TextBox_Container, Path=Text.Length}">
+                            <TextBox 
+                                x:Name="TextBox_Container" 
+                                Height="23" Padding="2, 2"
+                                Text="{Binding NewContainerName, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding
+                                        Key="Return"
+                                        Command="{Binding AddCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                            <Button 
+                                x:Name="Button_Add" 
+                                Content="Add" 
+                                VerticalAlignment="Top" 
+                                Command="{Binding AddCommand}">
+                                <Button.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource ContainerToBoolConverter}">
+                                        <Binding Path="NewContainerName" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="Items" UpdateSourceTrigger="PropertyChanged"/>
+                                    </MultiBinding>
+                                </Button.IsEnabled>
                             </Button>
                         </StackPanel>
                     </Border>
                 </GroupBox>
-                <Button Name="Button_Save" Content="Save configuration" VerticalAlignment="Top" Click="Button_Save_Click"/>
+                <Button 
+                    x:Name="Button_Save" Content="Save configuration" 
+                    VerticalAlignment="Top"/>
             </StackPanel>
         </Border>
 
